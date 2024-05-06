@@ -1,4 +1,6 @@
-﻿namespace App
+﻿
+
+namespace App
 {
     public partial class MainPage : ContentPage
     {
@@ -55,7 +57,7 @@
             return stack;
         }
 
-        private StackLayout buildImageButtons()
+        private StackLayout buildImageButtons(String ID)
         {
             StackLayout stack = new StackLayout();
 
@@ -63,6 +65,8 @@
             img.Source = "pendant.png";
             img.MaximumHeightRequest = 50;
             img.MaximumWidthRequest = 50;
+            img.Clicked += viewDetails;
+            img.AutomationId = ID;
 
             Button button = new Button();
             button.Text = "Remove";
@@ -92,7 +96,7 @@
             FlexLayout layout = new FlexLayout();
             layout.Margin = new Thickness(25, 10, 50, 10);
             layout.Children.Add(buildDeviceText(ID, Name));
-            layout.Children.Add(buildImageButtons());
+            layout.Children.Add(buildImageButtons(ID));
             layout.SetGrow(layout[0], 1);
             devices.Children.Add(layout);
         }
@@ -113,6 +117,11 @@
                 items.Children.Add(layout);
                 button.Source = "minus.png";
             }
+        }
+
+        private void viewDetails(object? sender, EventArgs e)
+        {
+            Navigation.PushAsync(new TrackingPage(((ImageButton)sender).AutomationId));
         }
     }
 
