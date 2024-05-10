@@ -17,4 +17,11 @@ public partial class TrackingPage : ContentPage
 		Navigation.PopAsync();
 	}
 
+	private void SendText(object? sender, EventArgs e)
+	{
+        string Text = "(" + DateTime.Now.ToString("hh:mm:ss") + ") " + ((Entry)(FindByName("textInput"))).Text;
+        Label textBox = (Label)FindByName("chatLog");
+        textBox.Text = Text + "\n" + textBox.Text;
+    }
+
 }
