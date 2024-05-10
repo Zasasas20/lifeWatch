@@ -12,11 +12,27 @@
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <FlexLayout Direction="Row" MaximumHeightRequest="50" BackgroundColor="Orange" Grid.Row="0">
-            <Label x:Name="device" Text="Name: " FlexLayout.Grow="1" VerticalOptions="Center" Margin="5,0,0,0" FontSize="Medium" TextColor="black"></Label>
+            <Label x:Name="device" Text="Name: " FlexLayout.Grow="1" VerticalOptions="Center" Margin="5,5,5,5" FontSize="Medium" TextColor="black"></Label>
             <ImageButton x:Name="Back" Source="back.png" Clicked="close" MaximumWidthRequest="50"></ImageButton>
         </FlexLayout>
-        <FlexLayout Direction="Column" Grid.Row="2">
-        </FlexLayout>
+        <Label Text="Map here" Grid.Row="1" BackgroundColor="Green" VerticalOptions="Center" HorizontalOptions="Center" Margin="5,5,5,5" VerticalTextAlignment="Center" MinimumWidthRequest="1000" MinimumHeightRequest="400"/>
+        <Grid x:Name="Text" Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Border Stroke="Orange" StrokeThickness="3" Grid.Row="0" Margin="5,5,5,5">
+                <ScrollView>
+                    <Label x:Name="chatLog" TextColor="Black"/>
+                </ScrollView>
+            </Border>
+            <FlexLayout Grid.Row="1" Margin="10,10,10,10">
+                <Border Stroke="Orange" StrokeThickness="3" FlexLayout.Grow="1" MaximumHeightRequest="50">
+                    <Entry Placeholder="Type a message to send: " TextColor="Black" x:Name="textInput" Completed="SendText"/>
+                </Border>
+                <Button Text="Send" BackgroundColor="Orange" TextColor="Black" MinimumWidthRequest="50" MaximumHeightRequest="50" Margin="5,0,0,0" Clicked="SendText"/>
+            </FlexLayout>
+        </Grid>
         <Label Text="" VerticalOptions="Center" FontSize="Medium" BackgroundColor="Orange" Grid.Row="3"></Label>
     </Grid>
 </ContentPage>
