@@ -34,7 +34,9 @@ public partial class TrackingPage : ContentPage
 		string Text = "(" + DateTime.Now.ToString("hh:mm:ss") + ") " + ((Entry)(FindByName("textInput"))).Text;
 		Label textBox = (Label)FindByName("chatLog");
 		textBox.Text = Text + "\n" + textBox.Text;
-	}
+        ((Entry)(FindByName("textInput"))).Text = "";
+
+    }
 
     // Variables for tracking the navigation route.
     private RouteTracker _tracker;
