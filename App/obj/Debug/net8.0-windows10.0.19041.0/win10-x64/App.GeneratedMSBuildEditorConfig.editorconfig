@@ -8,41 +8,41 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = App
-build_property.ProjectDir = C:\Users\seele\Documents\Repositories\lifeWatch\App\
+build_property.ProjectDir = C:\Users\ikoma\Source\Repos\Zasasas20\lifeWatch\App\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 
-[C:/Users/seele/Documents/Repositories/lifeWatch/App/App.xaml]
+[C:/Users/ikoma/Source/Repos/Zasasas20/lifeWatch/App/App.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = App.App.xaml
 build_metadata.AdditionalFiles.TargetPath = App.xaml
 build_metadata.AdditionalFiles.RelativePath = App.xaml
 
-[C:/Users/seele/Documents/Repositories/lifeWatch/App/AppShell.xaml]
+[C:/Users/ikoma/Source/Repos/Zasasas20/lifeWatch/App/AppShell.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = App.AppShell.xaml
 build_metadata.AdditionalFiles.TargetPath = AppShell.xaml
 build_metadata.AdditionalFiles.RelativePath = AppShell.xaml
 
-[C:/Users/seele/Documents/Repositories/lifeWatch/App/MainPage.xaml]
+[C:/Users/ikoma/Source/Repos/Zasasas20/lifeWatch/App/MainPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = App.MainPage.xaml
 build_metadata.AdditionalFiles.TargetPath = MainPage.xaml
 build_metadata.AdditionalFiles.RelativePath = MainPage.xaml
 
-[C:/Users/seele/Documents/Repositories/lifeWatch/App/Resources/Styles/Colors.xaml]
+[C:/Users/ikoma/Source/Repos/Zasasas20/lifeWatch/App/Resources/Styles/Colors.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = App.Resources.Styles.Colors.xaml
 build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Colors.xaml
 build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Colors.xaml
 
-[C:/Users/seele/Documents/Repositories/lifeWatch/App/Resources/Styles/Styles.xaml]
+[C:/Users/ikoma/Source/Repos/Zasasas20/lifeWatch/App/Resources/Styles/Styles.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = App.Resources.Styles.Styles.xaml
 build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Styles.xaml
 build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Styles.xaml
 
-[C:/Users/seele/Documents/Repositories/lifeWatch/App/TrackingPage.xaml]
+[C:/Users/ikoma/Source/Repos/Zasasas20/lifeWatch/App/TrackingPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = App.TrackingPage.xaml
 build_metadata.AdditionalFiles.TargetPath = TrackingPage.xaml

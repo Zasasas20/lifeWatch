@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:esriUI="clr-namespace:Esri.ArcGISRuntime.Maui;assembly=Esri.ArcGISRuntime.Maui"
+             xmlns:resources="clr-namespace:ArcGIS.Resources"
              x:Class="App.TrackingPage"
              Title=""
              Shell.NavBarIsVisible="False">
     <Grid x:Name="items"  BackgroundColor="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
@@ -15,7 +17,37 @@
             <Label x:Name="device" Text="Name: " FlexLayout.Grow="1" VerticalOptions="Center" Margin="5,5,5,5" FontSize="Medium" TextColor="black"></Label>
             <ImageButton x:Name="Back" Source="back.png" Clicked="close" MaximumWidthRequest="50"></ImageButton>
         </FlexLayout>
-        <Label Text="Map here" Grid.Row="1" BackgroundColor="Green" VerticalOptions="Center" HorizontalOptions="Center" Margin="5,5,5,5" VerticalTextAlignment="Center" MinimumWidthRequest="1000" MinimumHeightRequest="400"/>
+        <Grid Style="{DynamicResource EsriSampleContainer}"  Grid.Row="1" >
+            <esriUI:MapView x:Name="MyMapView" Style="{DynamicResource EsriSampleGeoView}" />
+            <Border Padding="5" Style="{DynamicResource EsriSampleControlPanel}">
+                <Grid Padding="5"
+              ColumnDefinitions="0.5*,0.5*"
+              ColumnSpacing="5"
+              MaximumWidthRequest="300"
+              RowDefinitions="auto,auto"
+              RowSpacing="5">
+                    <Button x:Name="StartNavigationButton"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Clicked="StartNavigation"
+                    IsEnabled="False"
+                    Text="Navigate" />
+                    <Button x:Name="RecenterButton"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Clicked="RecenterButton_Click"
+                    IsEnabled="False"
+                    Text="Recenter" />
+                    <Label x:Name="MessagesTextBlock"
+                   Grid.Row="1"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   Margin="5"
+                   IsVisible="false"
+                   Text="" />
+                </Grid>
+            </Border>
+        </Grid>
         <Grid x:Name="Text" Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
