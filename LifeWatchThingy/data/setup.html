@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<style>
+
+html, body{
+    margin: 0;
+    height: 100%;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#Elements{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+
+</style>
+<head>
+    <title>LifeWatch Internet Setup</title>
+</head>
+<body>
+    <div id = 'Elements'>
+        <div id = 'Info'>
+            <div class = 'textBox'>
+                <p>Network Name: </p>
+                <input type='text' id = 'SSID'>
+            </div>
+            <div class = 'textBox'>
+                <p>Password: </p>
+                <input type='text' id = 'Password'>
+            </div>
+        </div>
+        <div id = 'Button'>
+            <button id='Submit'>Connect</button> 
+            <button id='Restart'>Restart</button>
+        </div> 
+    </div>
+</body>
+<script>
+    var Socket;
+    document.getElementById('Submit').addEventListener('click', send_info);
+    document.getElementById('Restart').addEventListener('click', restart);
+
+    function init(){
+        Socket = new WebSocket('ws://' + window.location.hostname + ':81/');
+        Socket.onmessage = function(event) {};
+    }
+
+    function send_info(){
+        var data = {
+            SSID: document.getElementById('SSID').value,
+            PASSWORD: document.getElementById('Password').value
+        };
+        console.log(data);
+        Socket.send(JSON.stringify(data));
+    }
+
+    window.onload = function(event){
+        init();
+        console.log('Webiste Loads');
+    }
+
+    function restart(){
+        var data = {
+            Command: "Restart"
+        };
+        Socket.send(JSON.stringify(data));
+    }
+
+</script>
+</html>
