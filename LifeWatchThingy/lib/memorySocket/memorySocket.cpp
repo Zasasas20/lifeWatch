@@ -47,3 +47,25 @@ String memoryManager::getPass(){
     pref_.end();
     return pass;
 }   
+
+String memoryManager::getCode(){
+    pref_.begin("codeCreds", true);
+    String code = pref_.getString("CODE", "");
+    pref_.end();
+    return code;
+}
+
+bool memoryManager::isCodeSetup(){
+    pref_.begin("codeCreds", true);
+    bool status = pref_.getBool("Setup", false);
+    pref_.end();
+    return status;
+}
+
+void memoryManager::setCode(const char * Code){
+    Serial.println("Writing Code");
+    pref_.begin("codeCreds", false);
+    pref_.putString("CODE", Code);
+    pref_.putBool("Setup", true);
+    pref_.end();
+}

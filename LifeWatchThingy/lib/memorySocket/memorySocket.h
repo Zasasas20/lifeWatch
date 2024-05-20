@@ -10,7 +10,7 @@ class memoryManager{
         Preferences pref_; // Preferences instance
 
     public:
-        /// @brief Checks if wifi details are setup
+        /// @brief Checks if details are setup
         /// @return Boolean representing wifi state
         bool isSetup();
 
@@ -47,6 +47,12 @@ class memoryManager{
         /// @brief Gets stored password
         /// @return Password
         String getPass();
+
+        String getCode();
+
+        bool isCodeSetup();
+
+        void setCode(const char * Code);
 };
 
 #endif

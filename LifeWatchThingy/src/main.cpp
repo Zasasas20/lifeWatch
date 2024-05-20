@@ -1,6 +1,6 @@
 #include <Arduino.h>
-#include <WebSocketsServer.h>
-#include <ESPAsyncWebServer.h>  
+#include <AsyncMqttClient.h>
+#include <TinyGPS++.h>
 #include <../lib/webServer/APServer.h>
 #include <../lib/memorySocket/memorySocket.h>
 
@@ -8,7 +8,88 @@ std::unique_ptr<memoryManager> mem = std::unique_ptr<memoryManager>(new memoryMa
 
 std::unique_ptr<APServer> server;
 
+AsyncMqttClient Client;
 TFT_eSPI tft = TFT_eSPI();
+
+TinyGPSPlus gps;
+
+// DEBUG ONLY:
+bool debugMode = true;
+String SSID = "Zaid";
+String Pass = "Holdonbro";
+
+unsigned long lastMillis = 0;
+
+bool setting_up = false;
+
+String code;
+
+void SetUpCode(String code){
+  setting_up = false;
+  Serial.println("Setting up: ");
+  Serial.println(code);
+  mem->setCode(code.c_str());
+  delay(200);
+}
+
+void initWifi(){
+  Serial.println("Internet Data is setup");
+  if (debugMode){
+    WiFi.begin(SSID, Pass);
+  }
+  else{
+    WiFi.begin(mem->getSSID(), mem->getPass());
+  }
+
+  int count=0;
+
+  while (WiFi.status() != WL_CONNECTED){
+    delay(500);
+    Serial.println("Connecting");
+    count++;
+
+    if (count >= 10){
+      WiFi.disconnect();
+      mem->disableWiFi();
+      Serial.println("Connection Failed, restarting in AP Mode");
+      delay(1000);
+      ESP.restart();
+      }
+  }
+    Serial.print("Connected on: ");
+    Serial.println(WiFi.localIP());
+    tft.fillScreen(TFT_BLACK);
+    tft.drawString("Connected to Wifi", 0, 100);
+}
+
+String getPayload(char * data, size_t len){
+  String content = "";
+  for (size_t i = 0; i < len; i++){
+    content.concat(data[i]);
+  }
+  return content;
+}
+
+void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
+  Serial.println(topic);
+  String message = getPayload(payload, len);
+  if (setting_up && strcmp(topic, "Chip/Init") == 0 && strcmp(message.c_str(), "ACK") != 0){
+    Serial.println("Code: ");
+    Serial.println(message);
+    SetUpCode(message);
+  }
+}
+
+void onConnect(bool sessionPresent){
+  Client.subscribe("Chip/Init", 0);
+}
+
+void initMQTT(){
+  Client.onMessage(onMqttMessage);
+  Client.onConnect(onConnect);
+  Client.setServer(IPAddress(80,115,229,72), 1883);
+  Client.connect();
+}
 
 void setup() {
 
@@ -16,39 +97,72 @@ void setup() {
 
   tft.init();
 
-  if (mem->isSetup()){
-    Serial.println("Internet Data is setup");
-    WiFi.begin(mem->getSSID(), mem->getPass());
+  Serial2.begin(9600,SERIAL_8N1,25,26);
 
-    int count=0;
-
-    while (WiFi.status() != WL_CONNECTED){
-        delay(500);
-        Serial.println("Connecting");
-        count++;
-
-        if (count >= 10){
-          WiFi.disconnect();
-          mem->disableWiFi();
-          Serial.println("Connection Failed, restarting in AP Mode");
-          delay(1000);
-          ESP.restart();
+  if (mem->isSetup() || debugMode){
+    initWifi();
+    initMQTT();
+    delay(1000);
+    setting_up = !mem->isCodeSetup();
+    if (setting_up){
+      Client.publish("Chip/Init", 0, 0, "New Device");
+      int ticks = 0;
+      tft.fillScreen(TFT_BLACK);
+      tft.drawString("Waiting for code", 0, 100);
+      while(setting_up){
+        ticks++;
+        if (ticks == 10){
+          ticks = 0;
+          Client.publish("Chip/Init", 0, 0, "New Device");
         }
+        delay(1000);
+      }
+      Client.publish("Chip/Init", 0, 0, "ACK");
+      delay(1000);
+      ESP.restart();
     }
-        Serial.print("Connected on: ");
-        Serial.println(WiFi.localIP());
-
-        tft.fillScreen(TFT_BLACK);
-        tft.drawString("Connected to Wifi", 0, 100);
+    else{
+      tft.fillScreen(TFT_BLACK);
+      code = mem->getCode();
+      tft.drawString(code,0,100);
+    }
   }
   else{
     Serial.println("Read AP");
     server = std::unique_ptr<APServer>(new APServer(std::move(mem), &tft));
+    server->connect();
   }
 
-  server->connect();
+}
+
+void sendGPS(){
+  String jString = "";
+  StaticJsonDocument<200> doc_tx;
+  JsonObject obj = doc_tx.to<JsonObject>();
+  obj["code"] = code;
+  obj["battery"] = 9.0;
+  obj["status"] = "Normal";
+  obj["Location"]["Long"] = gps.location.lng();
+  obj["Location"]["Lat"] = gps.location.lat();
+  obj["Location"]["Mode"] =  "GPS";
+  serializeJson(doc_tx, jString);
+  Client.publish("Chip/Message", 0, 0, jString.c_str());
 }
 
 void loop() {
-  server->loop();
+  if (dynamic_cast<APServer*>(server.get()) != nullptr){
+      server->loop();
+  }
+  else{
+    while(Serial2.available() > 0){
+      if (gps.encode(Serial2.read())){
+        if (millis() - lastMillis > 5000){
+          if(gps.location.isValid()){
+            sendGPS();
+            lastMillis = millis();
+          }
+        }
+      }
+    }
+  }
 }
