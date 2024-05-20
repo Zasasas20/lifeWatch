@@ -1,14 +1,14 @@
 #include <Arduino.h>
-#include <AsyncMqttClient.h>
 #include <TinyGPS++.h>
 #include <../lib/webServer/APServer.h>
 #include <../lib/memorySocket/memorySocket.h>
+#include <../lib/mqttSocket/mqttSocket.h>
 
 std::unique_ptr<memoryManager> mem = std::unique_ptr<memoryManager>(new memoryManager);
 
 std::unique_ptr<APServer> server;
 
-AsyncMqttClient Client;
+mqttSocket client = mqttSocket(IPAddress(80,115,229,72));
 TFT_eSPI tft = TFT_eSPI();
 
 TinyGPSPlus gps;
@@ -62,33 +62,14 @@ void initWifi(){
     tft.drawString("Connected to Wifi", 0, 100);
 }
 
-String getPayload(char * data, size_t len){
-  String content = "";
-  for (size_t i = 0; i < len; i++){
-    content.concat(data[i]);
-  }
-  return content;
-}
-
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
   Serial.println(topic);
-  String message = getPayload(payload, len);
+  String message = client.getPayload(payload, len);
   if (setting_up && strcmp(topic, "Chip/Init") == 0 && strcmp(message.c_str(), "ACK") != 0){
     Serial.println("Code: ");
     Serial.println(message);
     SetUpCode(message);
   }
-}
-
-void onConnect(bool sessionPresent){
-  Client.subscribe("Chip/Init", 0);
-}
-
-void initMQTT(){
-  Client.onMessage(onMqttMessage);
-  Client.onConnect(onConnect);
-  Client.setServer(IPAddress(80,115,229,72), 1883);
-  Client.connect();
 }
 
 void setup() {
@@ -101,11 +82,12 @@ void setup() {
 
   if (mem->isSetup() || debugMode){
     initWifi();
-    initMQTT();
+    client.setHandler(onMqttMessage);
+    client.connect();
     delay(1000);
     setting_up = !mem->isCodeSetup();
     if (setting_up){
-      Client.publish("Chip/Init", 0, 0, "New Device");
+      client.send("Chip/Init", "New Device");
       int ticks = 0;
       tft.fillScreen(TFT_BLACK);
       tft.drawString("Waiting for code", 0, 100);
@@ -113,11 +95,11 @@ void setup() {
         ticks++;
         if (ticks == 10){
           ticks = 0;
-          Client.publish("Chip/Init", 0, 0, "New Device");
+          client.send("Chip/Init", "New Device");
         }
         delay(1000);
       }
-      Client.publish("Chip/Init", 0, 0, "ACK");
+      client.send("Chip/Init", "ACK");
       delay(1000);
       ESP.restart();
     }
@@ -126,6 +108,7 @@ void setup() {
       code = mem->getCode();
       tft.drawString(code,0,100);
     }
+    client.send("test/test", "connects");
   }
   else{
     Serial.println("Read AP");
@@ -146,11 +129,11 @@ void sendGPS(){
   obj["Location"]["Lat"] = gps.location.lat();
   obj["Location"]["Mode"] =  "GPS";
   serializeJson(doc_tx, jString);
-  Client.publish("Chip/Message", 0, 0, jString.c_str());
+  client.send("Chip/Message", jString.c_str());
 }
 
 void loop() {
-  if (dynamic_cast<APServer*>(server.get()) != nullptr){
+  if (server.get() != nullptr){
       server->loop();
   }
   else{
