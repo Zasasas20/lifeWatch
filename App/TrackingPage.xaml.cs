@@ -5,7 +5,10 @@ using Esri.ArcGISRuntime.Navigation;
 using Esri.ArcGISRuntime.Symbology;
 using Esri.ArcGISRuntime.Tasks.NetworkAnalysis;
 using Esri.ArcGISRuntime.UI;
-
+using System.Text.Json;
+using System.Text;
+using uPLibrary.Networking.M2Mqtt;
+using uPLibrary.Networking.M2Mqtt.Messages;
 using Color = System.Drawing.Color;
 using Location = Esri.ArcGISRuntime.Location.Location;
 
@@ -14,12 +17,57 @@ namespace App;
 public partial class TrackingPage : ContentPage
 {
 
-	String id;
+	string id;
+    string clientId;
 
-	public TrackingPage(String ID)
+
+    MqttClient client = new MqttClient("80.115.229.72");
+
+    ChipResponse response = new ChipResponse();
+
+
+    protected override void OnAppearing()
+    {
+        SetupBroker();
+        locationRequest();
+    }
+
+    async void locationRequest()
+    {
+        App_Request request = new App_Request();
+        request.code = id;
+        request.sessionID = clientId;
+        request.req = "Request";
+        client.Publish("Chip/Message", JsonSerializer.SerializeToUtf8Bytes<App_Request>(request));
+    }
+
+    async void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+    {
+        if (e.Topic == "Chip/Message")
+        {
+            response = JsonSerializer.Deserialize<ChipResponse>(e.Message);
+            if (response.req != "Request" && response.code == id)
+            {
+                _destination = new MapPoint(response.LocationData.Long, response.LocationData.Lat, SpatialReferences.Wgs84);
+                UpdateLocation();
+            }
+        }
+        await Task.Yield();
+    }
+
+    async void SetupBroker()
+    {
+        client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+        client.Connect(clientId);
+        client.Subscribe(new string[] { "Chip/Message" }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE });
+        await Task.Yield();
+    }
+
+    public TrackingPage(string ID, string CID)
 	{
 		InitializeComponent();
 		id = ID;
+        clientId = CID;
 		((Label)FindByName("device")).Text = "Name: " + id;
         Initialize();
     }
@@ -54,13 +102,14 @@ public partial class TrackingPage : ContentPage
     private MapPoint _origin;
 
     // Destination coordinates
-    private readonly MapPoint _destination = new MapPoint(6.891163102, 52.218665792, SpatialReferences.Wgs84);
+    private MapPoint _destination = new MapPoint(6.891163102, 52.218665792, SpatialReferences.Wgs84);
 
     // Routing servie for world
     private readonly Uri _routingUri = new Uri("https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World");
    
     private CancellationTokenSource _cancelTokenSource;
     private bool _isCheckingLocation;
+
 
     public async Task GetCurrentLocation()
     {
@@ -89,11 +138,53 @@ public partial class TrackingPage : ContentPage
         }
     }
 
+    public async Task UpdateLocation()
+    {
+        MyMapView.GraphicsOverlays[0].Graphics.Clear();
+
+        Stop stop1 = new Stop(_origin) { Name = "Origin" };
+        Stop stop2 = new Stop(_destination) { Name = "Destination" };
+
+        // Create the route task, using the online routing service.
+        RouteTask routeTask = await RouteTask.CreateAsync(_routingUri);
+
+        // Get the default route parameters.
+        RouteParameters routeParams = await routeTask.CreateDefaultParametersAsync();
+
+        List<Stop> stopPoints = new List<Stop> { stop1, stop2 };
+        routeParams.SetStops(stopPoints);
+
+        // Get the route results.
+        _routeResult = await routeTask.SolveRouteAsync(routeParams);
+        _route = _routeResult.Routes[0];
+
+        // Add graphics for the stops.
+        SimpleMarkerSymbol stopSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbolStyle.Diamond, Color.OrangeRed, 20);
+        MyMapView.GraphicsOverlays[0].Graphics.Add(new Graphic(_origin, stopSymbol));
+        MyMapView.GraphicsOverlays[0].Graphics.Add(new Graphic(_destination, stopSymbol));
+
+
+        // Create a graphic (with a dashed line symbol) to represent the route.
+        _routeAheadGraphic = new Graphic(_route.RouteGeometry) { Symbol = new SimpleLineSymbol(SimpleLineSymbolStyle.Dash, Color.BlueViolet, 5) };
+
+        // Create a graphic (solid) to represent the route that's been traveled (initially empty).
+        _routeTraveledGraphic = new Graphic { Symbol = new SimpleLineSymbol(SimpleLineSymbolStyle.Solid, Color.LightBlue, 3) };
+
+        // Add the route graphics to the map view.
+        MyMapView.GraphicsOverlays[0].Graphics.Add(_routeAheadGraphic);
+        MyMapView.GraphicsOverlays[0].Graphics.Add(_routeTraveledGraphic);
+
+        // Set the map viewpoint to show the entire route.
+        await MyMapView.SetViewpointGeometryAsync(_route.RouteGeometry, 100);
+
+    }
+
     public void CancelRequest()
     {
         if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
             _cancelTokenSource.Cancel();
     }
+
     private async Task Initialize()
     {
         try

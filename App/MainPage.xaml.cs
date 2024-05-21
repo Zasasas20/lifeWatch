@@ -1,15 +1,26 @@
-﻿
-
+﻿using uPLibrary.Networking.M2Mqtt.Messages;
+using uPLibrary.Networking.M2Mqtt;
 using System.Xml.Linq;
+using System.Text;
+using System.Text.Json;
 
 namespace App
 {
     public partial class MainPage : ContentPage
     {
+        MqttClient client = new MqttClient("80.115.229.72");
+        AppResponse response = new AppResponse();
+        bool searching = false;
+        string clientId = Guid.NewGuid().ToString();
 
         public MainPage()
         {
             InitializeComponent();
+        }
+
+        protected override void OnAppearing()
+        {
+            SetupBroker();
         }
 
         private Border buildTextBox()
@@ -25,6 +36,27 @@ namespace App
             entry.Completed += add_entry;
             border.Content = entry;
             return border;
+        }
+
+        async void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+        {
+            if (e.Topic == "App/Init")
+            {
+                response = JsonSerializer.Deserialize<AppResponse>(e.Message);
+                if (response.sessionID == clientId && response.req == "Response")
+                {
+                    searching = false;
+                }
+            }
+            await Task.Yield();
+        }
+
+        async void SetupBroker()
+        {
+            client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+            client.Connect(clientId);
+            client.Subscribe(new string[] { "Chip/Message", "App/Init" }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE });
+            await Task.Yield();
         }
 
         private Button buildTextButton()
@@ -56,12 +88,11 @@ namespace App
             return label;
         }
 
-        private StackLayout buildDeviceText(String ID, String name)
+        private StackLayout buildDeviceText(String ID, String status)
         {
             StackLayout stack = new StackLayout();
             stack.Children.Add(buildLabel("Device ID: ", ID));
-            stack.Children.Add(buildLabel("Name: ", name));
-            stack.Children.Add(buildLabel("Status: ", "Status"));
+            stack.Children.Add(buildLabel("Status: ", status));
             return stack;
         }
 
@@ -95,13 +126,12 @@ namespace App
             ((StackLayout)(element.Parent)).Remove(element);
         }
 
-        private void create_pendant(String ID)
+        private void create_pendant(String ID, String status)
         {
             StackLayout devices = (StackLayout)((ScrollView)((FlexLayout)FindByName("devices"))[0]).Content;
-            String Name = "bruh";
 
             FlexLayout layout = new FlexLayout();
-            layout.Children.Add(buildDeviceText(ID, Name));
+            layout.Children.Add(buildDeviceText(ID, status));
             layout.Children.Add(buildImageButtons(ID));
             layout.Margin = new Thickness(5, 5, 5, 5);
             layout.SetGrow(layout[0], 1);
@@ -113,15 +143,32 @@ namespace App
             devices.Add(border);
         }
 
+        async void pendantRequest(String ID)
+        {
+            App_Request request = new App_Request();
+            request.code = ID;
+            request.sessionID = clientId;
+            request.req = "Request";
+            client.Publish("App/Init", JsonSerializer.SerializeToUtf8Bytes<App_Request>(request));
+            searching = true;
+            while (searching)
+            {
+            }
+            if (response.status != "NULL")
+            {
+                create_pendant(response.code, response.status);
+            }
+        }
+
         private void add_button(object? sender, EventArgs e)
         {
             String ID = ((Entry)((Border)((FlexLayout)((Button)sender).Parent)[0]).Content).Text;
-            create_pendant(ID);
+            pendantRequest(ID);
         }
 
         private void add_entry(object? sender, EventArgs e)
         {
-            create_pendant(((Entry)sender).Text);
+            pendantRequest(((Entry)sender).Text);
         }
 
         private void plus_button(object sender, EventArgs e)
@@ -144,7 +191,7 @@ namespace App
 
         private void viewDetails(object? sender, EventArgs e)
         {
-            Navigation.PushAsync(new TrackingPage(((ImageButton)sender).AutomationId));
+            Navigation.PushAsync(new TrackingPage(((ImageButton)sender).AutomationId, clientId));
         }
     }
 
