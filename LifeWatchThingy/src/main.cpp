@@ -3,6 +3,7 @@
 #include <../lib/webServer/APServer.h>
 #include <../lib/memorySocket/memorySocket.h>
 #include <../lib/mqttSocket/mqttSocket.h>
+#include <Audio.h>
 
 std::unique_ptr<memoryManager> mem = std::unique_ptr<memoryManager>(new memoryManager);
 
@@ -12,6 +13,12 @@ mqttSocket client = mqttSocket(IPAddress(80,115,229,72));
 TFT_eSPI tft = TFT_eSPI();
 
 TinyGPSPlus gps;
+
+Audio audio;
+
+#define I2S_DOUT 22
+#define I2S_BCLK 26
+#define I2S_LRC 25
 
 // DEBUG ONLY:
 bool debugMode = true;
@@ -70,6 +77,13 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
     Serial.println(message);
     SetUpCode(message);
   }
+  else if (strcmp(topic, "App/Message") == 0){
+    StaticJsonDocument<200> doc_rx_;
+    deserializeJson(doc_rx_, payload);
+    if (strcmp(doc_rx_["Code"], code.c_str()) == 0){
+      audio.connecttospeech(doc_rx_["Message"], "en");
+    }
+  }
 }
 
 void setup() {
@@ -79,6 +93,10 @@ void setup() {
   tft.init();
 
   Serial2.begin(9600,SERIAL_8N1,25,26);
+
+  audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
+
+  audio.setVolume(10);
 
   if (mem->isSetup() || debugMode){
     initWifi();
@@ -133,6 +151,7 @@ void sendGPS(){
 }
 
 void loop() {
+  audio.loop();
   if (server.get() != nullptr){
       server->loop();
   }
