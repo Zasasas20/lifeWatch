@@ -27,4 +27,10 @@ namespace App
         public LocationData LocationData { get; set; }
         public string req { get; set; }
     }
+
+    public class AppMessage
+    {
+        public string code { get; set; }
+        public string message { get; set; }
+    }
 }

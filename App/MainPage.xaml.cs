@@ -3,6 +3,7 @@ using uPLibrary.Networking.M2Mqtt;
 using System.Xml.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Diagnostics;
 
 namespace App
 {
@@ -145,19 +146,26 @@ namespace App
 
         async void pendantRequest(String ID)
         {
+            Stopwatch stopwatch = new Stopwatch();
             App_Request request = new App_Request();
             request.code = ID;
             request.sessionID = clientId;
             request.req = "Request";
             client.Publish("App/Init", JsonSerializer.SerializeToUtf8Bytes<App_Request>(request));
             searching = true;
+            stopwatch.Start();
             while (searching)
             {
+                if (stopwatch.ElapsedMilliseconds > 3000)
+                {
+                    break;
+                }
             }
-            if (response.status != "NULL")
+            if (response.status != "NULL" && stopwatch.ElapsedMilliseconds < 3000)
             {
                 create_pendant(response.code, response.status);
             }
+            stopwatch.Stop();
         }
 
         private void add_button(object? sender, EventArgs e)

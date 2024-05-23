@@ -77,9 +77,20 @@ public partial class TrackingPage : ContentPage
 		Navigation.PopAsync();
 	}
 
+    private async Task sendMessage(string message)
+    {
+        AppMessage request = new AppMessage();
+        request.code = id;
+        request.message = message;
+        client.Publish("App/Message", JsonSerializer.SerializeToUtf8Bytes<AppMessage>(request));
+        await Task.Yield();
+    }
+
 	private void SendText(object? sender, EventArgs e)
 	{
-		string Text = "(" + DateTime.Now.ToString("hh:mm:ss") + ") " + ((Entry)(FindByName("textInput"))).Text;
+        string TextNoDate = ((Entry)(FindByName("textInput"))).Text;
+        sendMessage(TextNoDate);
+        string Text = "(" + DateTime.Now.ToString("hh:mm:ss") + ") " + ((Entry)(FindByName("textInput"))).Text;
 		Label textBox = (Label)FindByName("chatLog");
 		textBox.Text = Text + "\n" + textBox.Text;
         ((Entry)(FindByName("textInput"))).Text = "";
