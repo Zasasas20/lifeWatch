@@ -2,7 +2,7 @@
 import paho.mqtt.client as mqtt
 # JSON library for working with JSON data
 import json
-# PyODBC library for connection to database
+# PyODBC library for connection to databases
 import pyodbc
 from sorcery import dict_of
 
