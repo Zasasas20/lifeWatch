@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 python:3
+FROM python:3
 
 WORKDIR /app
 
@@ -7,7 +7,7 @@ COPY script.py ./
 
 RUN apt-get -y update && \
     apt-get install -y unixodbc-dev unixodbc odbcinst && \
-    apt-get install -y odbc-postgresql odbc-mariadb libsqliteodbc && \
+    apt-get install -y odbc-postgresql odbc-mariadb libsqliteodbc libssl-dev && \
     pip install pipreqs && \
     pipreqs /app && \
     pip install --no-cache-dir -r requirements.txt && \
