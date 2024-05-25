@@ -11,6 +11,9 @@ jobs:
         - name: Check out repo
           uses: actions/checkout@v3
 
+        - name: Change directories
+          run: cd lifeWatch/Pythonscript
+
         - name: Build docker image
           run: docker build -t zasasas20/lifewatch . 
         
