@@ -89,7 +89,9 @@ public partial class TrackingPage : ContentPage
 	private void SendText(object? sender, EventArgs e)
 	{
         string TextNoDate = ((Entry)(FindByName("textInput"))).Text;
-        sendMessage(TextNoDate);
+        string Name = ((Entry)(FindByName("nameInput"))).Text;
+        string message = Name + " says: " + TextNoDate;
+        sendMessage(message);
         string Text = "(" + DateTime.Now.ToString("hh:mm:ss") + ") " + ((Entry)(FindByName("textInput"))).Text;
 		Label textBox = (Label)FindByName("chatLog");
 		textBox.Text = Text + "\n" + textBox.Text;

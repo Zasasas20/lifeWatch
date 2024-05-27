@@ -59,6 +59,9 @@
                 </ScrollView>
             </Border>
             <FlexLayout Grid.Row="1" Margin="10,10,10,10">
+                <Border Stroke="Orange" StrokeThickness="3" MaximumHeightRequest="50" MaximumWidthRequest="200">
+                    <Entry Placeholder="Name: " TextColor="Black" x:Name="nameInput" MaximumWidthRequest="200"/>
+                </Border>
                 <Border Stroke="Orange" StrokeThickness="3" FlexLayout.Grow="1" MaximumHeightRequest="50">
                     <Entry Placeholder="Type a message to send: " TextColor="Black" x:Name="textInput" Completed="SendText"/>
                 </Border>
