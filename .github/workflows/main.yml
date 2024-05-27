@@ -12,7 +12,7 @@ jobs:
           
         - name: Build docker image
           working-directory: Pythonscript
-          run: docker buildx build . -t zasasas20/lifewatch 
+          run: docker build . -t zasasas20/lifewatch 
         
         - name: Push docker image
           working-directory: Pythonscript
