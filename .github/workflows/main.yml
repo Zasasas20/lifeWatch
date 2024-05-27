@@ -9,6 +9,9 @@ jobs:
     steps:
         - name: Check out repo
           uses: actions/checkout@v3
+
+        - name: Install Qemu
+          run: apt-get install -y qemu qemu-user-static
           
         - name: Build docker image
           working-directory: Pythonscript
