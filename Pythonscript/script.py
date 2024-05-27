@@ -17,7 +17,7 @@ new_code = None
 
 def connect_to_db():
     global cnxn, cursor
-    cnxn = pyodbc.connect("DRIVER={ODBC Driver 17 for SQL Server};"
+    cnxn = pyodbc.connect("DRIVER={ODBC Driver 18 for SQL Server};"
                           "SERVER=lifewatch.database.windows.net;"
                           "DATABASE=lifedb;"
                           "UID=fiveguys;"
