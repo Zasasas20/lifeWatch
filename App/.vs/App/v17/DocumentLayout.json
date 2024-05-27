@@ -1,26 +1,26 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\",
+  "WorkspaceRootPath": "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|c:\\users\\seele\\documents\\repositories\\lifewatch\\app\\trackingpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|solutionrelative:trackingpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|c:\\users\\seele\\documents\\repositories\\lifewatch\\app\\mainpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|c:\\users\\seele\\documents\\repoes\\app\\lifewatch\\app\\mainpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|solutionrelative:mainpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|c:\\users\\seele\\documents\\repositories\\lifewatch\\app\\apprequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|solutionrelative:apprequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|c:\\users\\seele\\documents\\repoes\\app\\lifewatch\\app\\trackingpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|solutionrelative:trackingpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|c:\\users\\seele\\documents\\repositories\\lifewatch\\app\\appresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|c:\\users\\seele\\documents\\repoes\\app\\lifewatch\\app\\appresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|solutionrelative:appresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|c:\\users\\seele\\documents\\repositories\\lifewatch\\app\\trackingpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|solutionrelative:trackingpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|c:\\users\\seele\\documents\\repoes\\app\\lifewatch\\app\\apprequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|solutionrelative:apprequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|c:\\users\\seele\\documents\\repoes\\app\\lifewatch\\app\\trackingpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{33C4E61C-6727-42F4-936A-CD2EE669CA37}|App.csproj|solutionrelative:trackingpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,69 +30,65 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 1,
               "Title": "TrackingPage.xaml",
-              "DocumentMoniker": "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\TrackingPage.xaml",
+              "DocumentMoniker": "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\TrackingPage.xaml",
               "RelativeDocumentMoniker": "TrackingPage.xaml",
-              "ToolTip": "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\TrackingPage.xaml",
+              "ToolTip": "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\TrackingPage.xaml",
               "RelativeToolTip": "TrackingPage.xaml",
-              "ViewState": "AQIAACcAAAAAAAAAAAAAADUAAAA2AAAA",
+              "ViewState": "AQIAAC0AAAAAAAAAAAAAAD4AAAAqAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-05-23T20:45:07.133Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "AppResponse.cs",
-              "DocumentMoniker": "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\AppResponse.cs",
-              "RelativeDocumentMoniker": "AppResponse.cs",
-              "ToolTip": "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\AppResponse.cs",
-              "RelativeToolTip": "AppResponse.cs",
-              "ViewState": "AQIAAA4AAAAAAAAAAAAIwCEAAAArAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-21T08:59:20.474Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-23T20:45:07.133Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "AppResponse.cs",
+              "DocumentMoniker": "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\AppResponse.cs",
+              "RelativeDocumentMoniker": "AppResponse.cs",
+              "ToolTip": "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\AppResponse.cs",
+              "RelativeToolTip": "AppResponse.cs",
+              "ViewState": "AQIAAA4AAAAAAAAAAAAIwCEAAAArAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-21T08:59:20.474Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "AppRequest.cs",
-              "DocumentMoniker": "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\AppRequest.cs",
+              "DocumentMoniker": "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\AppRequest.cs",
               "RelativeDocumentMoniker": "AppRequest.cs",
-              "ToolTip": "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\AppRequest.cs",
+              "ToolTip": "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\AppRequest.cs",
               "RelativeToolTip": "AppRequest.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-21T08:50:25.073Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-21T08:50:25.073Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "TrackingPage.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\TrackingPage.xaml.cs",
+              "RelativeDocumentMoniker": "TrackingPage.xaml.cs",
+              "ToolTip": "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\TrackingPage.xaml.cs",
+              "RelativeToolTip": "TrackingPage.xaml.cs",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAIwF4AAAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-21T08:35:22.113Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "TrackingPage.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\TrackingPage.xaml.cs",
-              "RelativeDocumentMoniker": "TrackingPage.xaml.cs",
-              "ToolTip": "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\TrackingPage.xaml.cs",
-              "RelativeToolTip": "TrackingPage.xaml.cs",
-              "ViewState": "AQIAAEoAAAAAAAAAAAA0wFIAAAAaAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-21T08:35:22.113Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "MainPage.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\MainPage.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\MainPage.xaml.cs",
               "RelativeDocumentMoniker": "MainPage.xaml.cs",
-              "ToolTip": "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\MainPage.xaml.cs",
+              "ToolTip": "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\MainPage.xaml.cs",
               "RelativeToolTip": "MainPage.xaml.cs",
-              "ViewState": "AQIAAAQAAAAAAAAAAAAAAKcAAAAdAAAA",
+              "ViewState": "AQIAACEAAAAAAAAAAAAowDkAAAAaAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-10T17:06:12.962Z",
               "EditorCaption": ""

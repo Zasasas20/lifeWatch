@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\App.csproj": {}
+    "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\App.csproj": {}
   },
   "projects": {
-    "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\App.csproj": {
+    "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\App.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\App.csproj",
+        "projectUniqueName": "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\App.csproj",
         "projectName": "App",
-        "projectPath": "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\App.csproj",
+        "projectPath": "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\App.csproj",
         "packagesPath": "C:\\Users\\seele\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\seele\\Documents\\Repositories\\lifeWatch\\App\\obj\\",
+        "outputPath": "C:\\Users\\seele\\Documents\\Repoes\\app\\lifeWatch\\App\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [

@@ -4,6 +4,7 @@ using System.Xml.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Diagnostics;
+using Android.Health.Connect.DataTypes;
 
 namespace App
 {
@@ -13,15 +14,50 @@ namespace App
         AppResponse response = new AppResponse();
         bool searching = false;
         string clientId = Guid.NewGuid().ToString();
+        bool firstBoot = true;
 
         public MainPage()
         {
             InitializeComponent();
         }
 
+        void add_mem(string code)
+        {
+            string codes = Preferences.Default.Get("Codes", "");
+            string[] codeslist = codes.Split(",");
+            List<string> strings = new List<string>(codeslist);
+            if (Array.IndexOf(codeslist, code) < 0)
+            {
+                strings.Add(code);
+            }
+            Preferences.Default.Set("Codes", string.Join(",", strings));
+        }
+
+        void rem_mem(string code)
+        {
+            string codes = Preferences.Default.Get("Codes", "");
+            string[] codeslist = codes.Split(",");
+            string[] newlist = { };
+            foreach(string cod in codeslist) { if(cod != code) { newlist.Append(cod); } }
+            Preferences.Default.Set("Codes", string.Join(",", newlist));
+        }
+
+        async void load_mem()
+        {
+            string codes = Preferences.Default.Get("Codes", "");
+            string[] codesList = codes.Split(",");
+            foreach(string code in codesList)
+            {
+                await pendantRequest(code, true);
+            }
+        }
+
+
         protected override void OnAppearing()
         {
             SetupBroker();
+            if (firstBoot) { load_mem(); }
+            firstBoot = false;
         }
 
         private Border buildTextBox()
@@ -114,6 +150,7 @@ namespace App
             button.MaximumWidthRequest = 100;
             button.Clicked += remove_device;
             button.Margin = new Thickness(0, 5, 0, 0);
+            button.AutomationId = ID;
 
             stack.Children.Add(img);
             stack.Children.Add(button);
@@ -124,6 +161,7 @@ namespace App
         private void remove_device(object? sender, EventArgs e)
         {
             Border element = (Border)((FlexLayout)((StackLayout)((Button)sender).Parent).Parent).Parent;
+            string ID = ((Button)sender).AutomationId;
             ((StackLayout)(element.Parent)).Remove(element);
         }
 
@@ -144,7 +182,7 @@ namespace App
             devices.Add(border);
         }
 
-        async void pendantRequest(String ID)
+        async Task pendantRequest(String ID, bool page)
         {
             Stopwatch stopwatch = new Stopwatch();
             App_Request request = new App_Request();
@@ -164,6 +202,10 @@ namespace App
             if (response.status != "NULL" && stopwatch.ElapsedMilliseconds < 3000)
             {
                 create_pendant(response.code, response.status);
+                if (!page)
+                {
+                    add_mem(ID);
+                }
             }
             stopwatch.Stop();
         }
@@ -171,12 +213,12 @@ namespace App
         private void add_button(object? sender, EventArgs e)
         {
             String ID = ((Entry)((Border)((FlexLayout)((Button)sender).Parent)[0]).Content).Text;
-            pendantRequest(ID);
+            pendantRequest(ID, false);
         }
 
         private void add_entry(object? sender, EventArgs e)
         {
-            pendantRequest(((Entry)sender).Text);
+            pendantRequest(((Entry)sender).Text, false);
         }
 
         private void plus_button(object sender, EventArgs e)
