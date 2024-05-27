@@ -20,7 +20,7 @@ class pendant
         HardwareSerial * stream_;
     public:
         std::unique_ptr<memoryManager> mem;
-        pendant(std::unique_ptr<memoryManager> mem, Audio* audio, TinyGPSPlus * gps, HardwareSerial *s);
+        pendant(std::unique_ptr<memoryManager> mem, Audio* audio, TinyGPSPlus * gps);
 
         bool Initialize();
         void SetCode(String& code);

@@ -1,10 +1,9 @@
 #include "pendant.h"
 
-pendant::pendant(std::unique_ptr<memoryManager> memo, Audio* audio, TinyGPSPlus * gps, HardwareSerial *s):
+pendant::pendant(std::unique_ptr<memoryManager> memo, Audio* audio, TinyGPSPlus * gps):
 mem(std::move(memo)){
     audio_ = audio;
     gps_ = gps;
-    stream_ = s;
 }
 
 bool pendant::Initialize(){
@@ -27,8 +26,8 @@ void pendant::PlayAudio(String message){
 }
 
 Data pendant::getGPSData(){
-    if(stream_->available() > 0){
-      if (gps_->encode(stream_->read())){
+    while(Serial2.available() > 0){
+      if (gps_->encode(Serial2.read())){
           if(gps_->location.isValid()){
             data_.lng = gps_->location.lng();
             data_.lat = gps_->location.lat();

@@ -18,7 +18,7 @@ class lifewatch{
         void initWifi(bool debugMode, String SSID, String Pass);
         void sendNudge();
     public:
-        lifewatch(std::unique_ptr<memoryManager> mem, Audio* audio, TinyGPSPlus * gps, IPAddress address, bool debugMode, String SSID, String Pass, HardwareSerial * s, TFT_eSPI * tft);
+        lifewatch(std::unique_ptr<memoryManager> mem, Audio* audio, TinyGPSPlus * gps, IPAddress address, bool debugMode, String SSID, String Pass, TFT_eSPI * tft);
 
         void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
         void setCallback(void (*func)(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total));

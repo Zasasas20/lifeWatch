@@ -11,9 +11,9 @@ Audio audio;
 
 TFT_eSPI tft;
 
-//#define I2S_DOUT 0
-//#define I2S_BCLK 0
-//#define I2S_LRC 0
+#define I2S_DOUT 12
+#define I2S_BCLK 13
+#define I2S_LRC 15
 
 // DEBUG ONLY:
 bool debugMode = true;
@@ -30,9 +30,9 @@ void setup() {
 
   Serial2.begin(9600,SERIAL_8N1,25,26);
 
-  //audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
+  audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
 
-  //audio.setVolume(10);
+  audio.setVolume(10);
 
   tft.init();
 
@@ -40,7 +40,7 @@ void setup() {
   tft.drawString("HIII", 0, 100);
 
   if (mem->isSetup() || debugMode){
-    LifeWatch = std::unique_ptr<lifewatch>(new lifewatch(std::move(mem), &audio, &gps, IPAddress(80,115,229,72), debugMode, SSID, Pass, &Serial2, &tft));
+    LifeWatch = std::unique_ptr<lifewatch>(new lifewatch(std::move(mem), &audio, &gps, IPAddress(80,115,229,72), debugMode, SSID, Pass, &tft));
     LifeWatch->setCallback(mqttWrapper);
   }
   else{
@@ -57,5 +57,6 @@ void loop() {
   }
   else{
     LifeWatch->loop();
+
   }
 }

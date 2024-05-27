@@ -1,8 +1,8 @@
 #include "lifewatch.h"
 
-lifewatch::lifewatch(std::unique_ptr<memoryManager> mem, Audio* audio, TinyGPSPlus * gps, IPAddress address, bool debugMode, String SSID, String Pass, HardwareSerial * s, TFT_eSPI * tft):
+lifewatch::lifewatch(std::unique_ptr<memoryManager> mem, Audio* audio, TinyGPSPlus * gps, IPAddress address, bool debugMode, String SSID, String Pass, TFT_eSPI * tft):
 client_(mqttSocket(address, "")),
-pendantobj_(std::unique_ptr<pendant>(new pendant(std::move(mem), audio, gps, s))),
+pendantobj_(std::unique_ptr<pendant>(new pendant(std::move(mem), audio, gps))),
 screenDriver_(std::unique_ptr<screenDriver>(new screenDriver(tft))){
     initWifi(debugMode, SSID, Pass);
 }
@@ -21,9 +21,14 @@ void lifewatch::onMqttMessage(char* topic, char* payload, AsyncMqttClientMessage
   }
   else if (strcmp(topic, "App/Message") == 0 && !setup){
     StaticJsonDocument<200> doc_rx_;
-    deserializeJson(doc_rx_, payload);
-    if (strcmp(doc_rx_["Code"], pendantobj_->getCode().c_str()) == 0){
-      pendantobj_->PlayAudio(doc_rx_["Message"]);
+    Serial.println(message);
+    deserializeJson(doc_rx_, message);
+    const char* code = doc_rx_["code"];
+    Serial.println(code);
+    if (strcmp(code, pendantobj_->getCode().c_str()) == 0){
+      const char* voicemessage = doc_rx_["message"];
+      Serial.println(voicemessage);
+      pendantobj_->PlayAudio(voicemessage);
     }
   }
 }

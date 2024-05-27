@@ -24,6 +24,7 @@ String mqttSocket::getPayload(char * data, size_t len){
 
 void mqttSocket::onConnect(bool sessionPresent){
     client_.subscribe("Chip/Init", 0);
+    client_.subscribe("App/Message", 0);
 }
 
 void mqttSocket::send(const char* topic, const char* data){
