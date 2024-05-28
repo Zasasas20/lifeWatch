@@ -4,7 +4,7 @@ using System.Xml.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Diagnostics;
-using Android.Health.Connect.DataTypes;
+using Mopups.Services;
 
 namespace App
 {
@@ -15,10 +15,12 @@ namespace App
         bool searching = false;
         string clientId = Guid.NewGuid().ToString();
         bool firstBoot = true;
+        private LoadingPage loadingpage;
 
         public MainPage()
         {
             InitializeComponent();
+            loadingpage = new LoadingPage();
         }
 
         void add_mem(string code)
@@ -191,12 +193,17 @@ namespace App
             request.req = "Request";
             client.Publish("App/Init", JsonSerializer.SerializeToUtf8Bytes<App_Request>(request));
             searching = true;
+            if (!page) {
+                await MopupService.Instance.PushAsync(loadingpage);
+                loadingpage.ShowLoading(); 
+            }
+
             stopwatch.Start();
             while (searching)
             {
                 if (stopwatch.ElapsedMilliseconds > 3000)
                 {
-                    break;
+                    searching = false;
                 }
             }
             if (response.status != "NULL" && stopwatch.ElapsedMilliseconds < 3000)
@@ -204,9 +211,18 @@ namespace App
                 create_pendant(response.code, response.status);
                 if (!page)
                 {
+                    loadingpage.ShowCheckMark();
                     add_mem(ID);
+
+                }
+            }else if(response.status == "NULL" || !searching)
+            {
+                if (!page) { 
+                    loadingpage.ShowXMark();
                 }
             }
+
+
             stopwatch.Stop();
         }
 

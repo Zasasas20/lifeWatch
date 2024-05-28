@@ -1,6 +1,8 @@
 ﻿using Esri.ArcGISRuntime;
 using Esri.ArcGISRuntime.Maui;
+using Mopups.Hosting;
 using Microsoft.Extensions.Logging;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace App
 {
@@ -11,6 +13,8 @@ namespace App
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .ConfigureMopups()
+                .UseSkiaSharp()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
