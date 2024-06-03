@@ -2,6 +2,7 @@
 using Esri.ArcGISRuntime.Maui;
 using Mopups.Hosting;
 using Microsoft.Extensions.Logging;
+using Plugin.LocalNotification;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace App
@@ -13,6 +14,7 @@ namespace App
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseLocalNotification()
                 .ConfigureMopups()
                 .UseSkiaSharp()
                 .ConfigureFonts(fonts =>

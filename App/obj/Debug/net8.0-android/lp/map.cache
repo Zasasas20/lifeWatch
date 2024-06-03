@@ -171,3 +171,16 @@ SkiaSharp.Views.Maui.Controls.dll
 SkiaSharp.Views.Maui.Core.dll
 SkiaSharp.Extended.UI.aar
 SkiaSharp.Views.Android.aar
+Plugin.LocalNotification.dll
+Xamarin.GooglePlayServices.Base.dll
+Xamarin.GooglePlayServices.Basement.dll
+Xamarin.GooglePlayServices.Location.dll
+Xamarin.GooglePlayServices.Tasks.dll
+play-services-base.aar
+play-services-basement.aar
+play-services-location.aar
+play-services-tasks.aar
+playservicesbasement-18.2.0.aar
+playservicestasks-18.0.2.aar
+playservicesbase-18.2.0.aar
+playserviceslocation-21.0.1.aar

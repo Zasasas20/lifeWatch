@@ -164,6 +164,7 @@ namespace App
         {
             Border element = (Border)((FlexLayout)((StackLayout)((Button)sender).Parent).Parent).Parent;
             string ID = ((Button)sender).AutomationId;
+            rem_mem(ID);
             ((StackLayout)(element.Parent)).Remove(element);
         }
 

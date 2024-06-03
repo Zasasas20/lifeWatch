@@ -19,6 +19,7 @@ public partial class TrackingPage : ContentPage
 
 	string id;
     string clientId;
+    bool start = true;
 
 
     MqttClient client = new MqttClient("80.115.229.72");
@@ -46,10 +47,10 @@ public partial class TrackingPage : ContentPage
         if (e.Topic == "Chip/Message")
         {
             response = JsonSerializer.Deserialize<ChipResponse>(e.Message);
-            if (response.req != "Request" && response.code == id)
+            if (response.req != "Request" && response.code == id && !start)
             {
                 _destination = new MapPoint(response.LocationData.Long, response.LocationData.Lat, SpatialReferences.Wgs84);
-                UpdateLocation();
+                await UpdateLocation();
             }
         }
         await Task.Yield();
@@ -256,6 +257,8 @@ public partial class TrackingPage : ContentPage
 
             // Enable the navigation button.
             StartNavigationButton.IsEnabled = true;
+
+            start = false;
         }
         catch (Exception e)
         {
