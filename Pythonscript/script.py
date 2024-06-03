@@ -16,7 +16,7 @@ new_code = None
 
 def connect_to_db():
     global cnxn, cursor
-    cnxn = pyodbc.connect("DRIVER={ODBC Driver 18 for SQL Server};"
+    cnxn = pyodbc.connect("DRIVER={ODBC Driver 17 for SQL Server};"
                           "SERVER=lifewatch.database.windows.net;"
                           "DATABASE=lifedb;"
                           "UID=fiveguys;"
@@ -123,7 +123,7 @@ def add_location(msg):
     code = data['code']
     battery = data['battery']
     status = data['status']
-    location = data['Location']
+    location = data['LocationData']
     longitude = location['Long']
     latitude = location['Lat']
 
