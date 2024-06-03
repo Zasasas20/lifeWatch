@@ -20,6 +20,8 @@ bool debugMode = true;
 String SSID = "Zaid";
 String Pass = "Holdonbro";
 
+unsigned long lastMillis;
+
 void mqttWrapper(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total){
   LifeWatch->onMqttMessage(topic, payload, properties, len, index, total);
 }
@@ -32,7 +34,7 @@ void setup() {
 
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
 
-  audio.setVolume(10);
+  audio.setVolume(17);
 
   tft.init();
 
@@ -40,7 +42,7 @@ void setup() {
   tft.drawString("HIII", 0, 100);
 
   if (mem->isSetup() || debugMode){
-    LifeWatch = std::unique_ptr<lifewatch>(new lifewatch(std::move(mem), &audio, &gps, IPAddress(80,115,229,72), debugMode, SSID, Pass, &tft));
+    LifeWatch = std::unique_ptr<lifewatch>(new lifewatch(std::move(mem), &audio, IPAddress(80,115,229,72), debugMode, SSID, Pass, &tft));
     LifeWatch->setCallback(mqttWrapper);
   }
   else{
@@ -56,7 +58,16 @@ void loop() {
     server->loop();
   }
   else{
-    LifeWatch->loop();
-
+    while(Serial2.available() > 0){
+      if (gps.encode(Serial2.read())){
+          if(gps.location.isValid()){
+            if (millis() - lastMillis > 3000){
+              LifeWatch->sendGPS(gps.location.lat(), gps.location.lng());
+              lastMillis = millis();
+            }
+          }
+        }
+      LifeWatch->loop();
+    }
   }
 }

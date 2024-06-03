@@ -1,8 +1,8 @@
 #include "lifewatch.h"
 
-lifewatch::lifewatch(std::unique_ptr<memoryManager> mem, Audio* audio, TinyGPSPlus * gps, IPAddress address, bool debugMode, String SSID, String Pass, TFT_eSPI * tft):
+lifewatch::lifewatch(std::unique_ptr<memoryManager> mem, Audio* audio, IPAddress address, bool debugMode, String SSID, String Pass, TFT_eSPI * tft):
 client_(mqttSocket(address, "")),
-pendantobj_(std::unique_ptr<pendant>(new pendant(std::move(mem), audio, gps))),
+pendantobj_(std::unique_ptr<pendant>(new pendant(std::move(mem), audio))),
 screenDriver_(std::unique_ptr<screenDriver>(new screenDriver(tft))){
     initWifi(debugMode, SSID, Pass);
 }
@@ -61,34 +61,22 @@ void lifewatch::initWifi(bool debugMode, String SSID, String Pass){
     Serial.println(WiFi.localIP());
 }
 
-void lifewatch::sendGPS(){
+void lifewatch::sendGPS(float lat, float lng){
     String jString = "";
     StaticJsonDocument<200> doc_tx;
     JsonObject obj = doc_tx.to<JsonObject>();
-    Data data = pendantobj_->getGPSData();
-    if(data.lng == 0 || data.lat == 0) return;
     obj["code"] = pendantobj_->getCode();
     obj["battery"] = 9.0;
     obj["status"] = "Normal";
+    obj["LocationData"]["Long"] = lng;
+    obj["LocationData"]["Lat"] = lat;
+    obj["LocationData"]["Mode"] =  "GPS";
     obj["req"] = "Chip";
-    obj["Location"]["Long"] = data.lng;
-    obj["Location"]["Lat"] = data.lat;
-    obj["Location"]["Mode"] =  "GPS";
     serializeJson(doc_tx, jString);
     client_.send("Chip/Message", jString.c_str());
 }
 
 void lifewatch::loop(){
-    if (millis() - lastMillis > 5000){
-        if (!setup){
-            sendGPS();
-            lastMillis = millis();
-        }
-        else{
-            sendNudge();
-            lastMillis = millis();
-        }
-    }
     pendantobj_->loop();
 }
 

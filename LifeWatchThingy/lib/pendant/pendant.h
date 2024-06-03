@@ -13,19 +13,17 @@ class pendant
 {
     private:
         Audio * audio_;
-        TinyGPSPlus * gps_;
 
         String code_;
         Data data_;
         HardwareSerial * stream_;
     public:
         std::unique_ptr<memoryManager> mem;
-        pendant(std::unique_ptr<memoryManager> mem, Audio* audio, TinyGPSPlus * gps);
+        pendant(std::unique_ptr<memoryManager> mem, Audio* audio);
 
         bool Initialize();
         void SetCode(String& code);
         void PlayAudio(String message);
-        Data getGPSData();
         String getCode();
 
         void loop();
