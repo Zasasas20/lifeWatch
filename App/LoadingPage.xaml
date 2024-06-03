@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+             xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             x:Class="App.LoadingPage"
+             Title="LoadingPage"
+             BackgroundColor="#80000000">
+    <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Frame BackgroundColor="White"
+               Padding="20"
+               CornerRadius="10"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               Grid.Row="0">
+            <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+               
+                <ActivityIndicator x:Name="LoadingIndicator"
+                                   IsRunning="True"
+                                   Color="Orange"
+                                   VerticalOptions="CenterAndExpand"
+                                   HorizontalOptions="CenterAndExpand" />
+                
+                <skia:SKLottieView 
+                    x:Name="CheckMarkAnimation"
+                    Source="check.json"
+                    RepeatCount="-1"
+                    RepeatMode="Restart"
+                    HeightRequest="100"
+                    WidthRequest="100"
+                    IsVisible="False"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="CenterAndExpand" />
+
+                <skia:SKLottieView 
+                    x:Name="XMarkAnimation"
+                    Source="x.json"
+                    RepeatCount="-1"
+                    RepeatMode="Restart"
+                    HeightRequest="100"
+                    WidthRequest="100"
+                    IsVisible="False"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="CenterAndExpand" />  
+
+
+            </StackLayout>
+        </Frame>
+
+        <Label Grid.Row="1"
+               x:Name="LoadingLabel"
+               Text="Loading, please wait..."
+               TextColor="Black"
+               FontSize="Medium"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               Margin="0,10,0,0"/>
+    </Grid>
+</mopups:PopupPage>
