@@ -6,6 +6,7 @@ WORKDIR /app
 COPY script.py ./
 
 RUN apt-get -y update && \
+    apt-get -y upgrade && \
     apt-get install -y unixodbc-dev unixodbc odbcinst && \
     apt-get install -y odbc-postgresql odbc-mariadb libsqliteodbc libssl-dev && \
     pip install pipreqs && \
