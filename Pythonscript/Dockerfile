@@ -14,8 +14,8 @@ RUN apt-get -y update && \
     pip install --no-cache-dir -r requirements.txt && \
     apt-get install apt-transport-https && \
     curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-    curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
-    apt-get update && apt install -y apt-utils
+    curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+    apt-get -y update
 
 # INSTALL ODBC DRIVER
 RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17
