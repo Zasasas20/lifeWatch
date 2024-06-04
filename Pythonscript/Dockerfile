@@ -13,12 +13,12 @@ RUN apt-get -y update && \
     pipreqs /app && \
     pip install --no-cache-dir -r requirements.txt && \
     apt-get install apt-transport-https && \
-    curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc && \
-    curl https://packages.microsoft.com/config/debian/10/prod.list | tee /etc/apt/sources.list.d/mssql-release.list && \
-    apt-get update
+    curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+    apt-get update && apt install -y apt-utils
 
 # INSTALL ODBC DRIVER
-RUN ACCEPT_EULA=Y apt-get install -y msodbcsql18
+RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17
 
 # Runs script, default entry point /bin/sh -c
 CMD [ "python", "./script.py" ]
