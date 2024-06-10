@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Diagnostics;
 using Mopups.Services;
+using Plugin.LocalNotification;
 
 namespace App
 {
@@ -14,12 +15,14 @@ namespace App
         AppResponse response = new AppResponse();
         bool searching = false;
         string clientId = Guid.NewGuid().ToString();
+        List<string> codesList = new List<string>();
         bool firstBoot = true;
         private LoadingPage loadingpage;
 
         public MainPage()
         {
             InitializeComponent();
+
             loadingpage = new LoadingPage();
         }
 
@@ -31,6 +34,7 @@ namespace App
             if (Array.IndexOf(codeslist, code) < 0)
             {
                 strings.Add(code);
+                codesList.Add(code);
             }
             Preferences.Default.Set("Codes", string.Join(",", strings));
         }
@@ -41,14 +45,18 @@ namespace App
             string[] codeslist = codes.Split(",");
             string[] newlist = { };
             foreach(string cod in codeslist) { if(cod != code) { newlist.Append(cod); } }
+            List<string> codess = new List<string>(newlist);
+            codesList = codess;
             Preferences.Default.Set("Codes", string.Join(",", newlist));
         }
 
         async void load_mem()
         {
             string codes = Preferences.Default.Get("Codes", "");
-            string[] codesList = codes.Split(",");
-            foreach(string code in codesList)
+            string[] codeslist = codes.Split(",");
+            List<string> codess = new List<string>(codeslist);
+            codesList = codess;
+            foreach (string code in codeslist)
             {
                 await pendantRequest(code, true);
             }
@@ -60,6 +68,15 @@ namespace App
             SetupBroker();
             if (firstBoot) { load_mem(); }
             firstBoot = false;
+            enableNotifs();
+        }
+
+        async void enableNotifs()
+        {
+            if (await LocalNotificationCenter.Current.AreNotificationsEnabled() == false)
+            {
+                await LocalNotificationCenter.Current.RequestNotificationPermission();
+            }
         }
 
         private Border buildTextBox()
@@ -87,6 +104,28 @@ namespace App
                     searching = false;
                 }
             }
+            if (e.Topic == "Chip/SOS")
+            {
+                SOS res = JsonSerializer.Deserialize<SOS>(e.Message);
+                bool f_device = codesList.Contains(res.code);
+                if (f_device) 
+                {
+                    var req = new NotificationRequest
+                    {
+                        NotificationId = 1337,
+                        Title = "YOUR GRANDPA NEEDS HELP!",
+                        Description = "Go to location tracking",
+                        Sound = DeviceInfo.Platform == DevicePlatform.Android ? "notif" : "notif.mp3",
+                        Subtitle = "Hello",
+                        BadgeNumber = 42,
+                        Schedule = new NotificationRequestSchedule
+                        {
+                            NotifyTime = DateTime.Now.AddSeconds(0),
+                        }
+                    };
+                    await LocalNotificationCenter.Current.Show(req);
+                }
+            }
             await Task.Yield();
         }
 
@@ -94,7 +133,7 @@ namespace App
         {
             client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
             client.Connect(clientId);
-            client.Subscribe(new string[] { "Chip/Message", "App/Init" }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE });
+            client.Subscribe(new string[] { "Chip/Message", "App/Init", "Chip/SOS"}, new byte[] { MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE });
             await Task.Yield();
         }
 

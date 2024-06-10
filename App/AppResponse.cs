@@ -15,6 +15,12 @@ namespace App
         public string req { get; set; }
     }
 
+    public class SOS
+    {
+        public string code { get; set;}
+        public string status { get; set; }
+    }
+
     public class LocationData
     {
         public double Long { get; set; }

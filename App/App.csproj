@@ -57,6 +57,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Raw\notif.mp3" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="Esri.ArcGISRuntime.Maui" Version="200.3.0" />
 		<PackageReference Include="M2Mqtt" Version="4.3.0" />

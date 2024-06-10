@@ -4,6 +4,7 @@ using Mopups.Hosting;
 using Microsoft.Extensions.Logging;
 using Plugin.LocalNotification;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using Plugin.LocalNotification.AndroidOption;
 
 namespace App
 {
@@ -14,7 +15,16 @@ namespace App
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseLocalNotification()
+                .UseLocalNotification(config =>
+                {
+                    config.AddAndroid(android =>
+                    {
+                        android.AddChannel(new NotificationChannelRequest
+                        {
+                            Sound = "notif"
+                        });
+                    });
+                })
                 .ConfigureMopups()
                 .UseSkiaSharp()
                 .ConfigureFonts(fonts =>
