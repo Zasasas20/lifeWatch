@@ -10,21 +10,22 @@ screenDriver_(std::unique_ptr<screenDriver>(new screenDriver(tft))){
 void lifewatch::onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
   Serial.println(topic);
   String message = client_.getPayload(payload, len);
-  if (setup && strcmp(topic, "Chip/Init") == 0 && strcmp(message.c_str(), "ACK") != 0 && strcmp(message.c_str(), "New Device") != 0){
+  if (_setup && strcmp(topic, "Chip/Init") == 0 && strcmp(message.c_str(), "ACK") != 0 && strcmp(message.c_str(), "New Device") != 0){
     Serial.println("Code: ");
     Serial.println(message);
-    setup = false;
+    _setup = false;
     pendantobj_->SetCode(message);
     client_.send("Chip/Init", "ACK");
     delay(1000);
     ESP.restart();
   }
-  else if (strcmp(topic, "App/Message") == 0 && !setup){
+  else if (strcmp(topic, "App/Message") == 0 && !_setup){
     StaticJsonDocument<200> doc_rx_;
     Serial.println(message);
     deserializeJson(doc_rx_, message);
     const char* code = doc_rx_["code"];
     Serial.println(code);
+    Serial.println(pendantobj_->getCode());
     if (strcmp(code, pendantobj_->getCode().c_str()) == 0){
       const char* voicemessage = doc_rx_["message"];
       Serial.println(voicemessage);
@@ -67,7 +68,7 @@ void lifewatch::sendGPS(float lat, float lng){
     JsonObject obj = doc_tx.to<JsonObject>();
     obj["code"] = pendantobj_->getCode();
     obj["battery"] = 9.0;
-    obj["status"] = "Normal";
+    obj["status"] = _sos? "SOS" : "Normal";
     obj["LocationData"]["Long"] = lng;
     obj["LocationData"]["Lat"] = lat;
     obj["LocationData"]["Mode"] =  "GPS";
@@ -78,6 +79,25 @@ void lifewatch::sendGPS(float lat, float lng){
 
 void lifewatch::loop(){
     pendantobj_->loop();
+    if(_setup && millis() - _lastMillis > 3000) {sendNudge(); _lastMillis = millis();}
+    else if (!_setup && _count > 0 && millis() - _lastMillis > 1000 && _mode){
+      _lastMillis = millis();
+      screenDriver_->displayCode(pendantobj_->getCode());
+      screenDriver_->countdownSOS(_count--);
+      if(_count == 0){
+        screenDriver_->displayCode(pendantobj_->getCode());
+        screenDriver_->displaySOS();
+        _sos = true;
+        pendantobj_->PlayAudio("SOS mode on");
+        sendSOS(true);
+      }
+    }
+    else if (!_setup && millis() - _lastMillis > 10000 && _sos){
+      sendSOS(true);
+      _lastMillis = millis();
+      screenDriver_->displayCode(pendantobj_->getCode());
+      screenDriver_->displaySOS();
+    }
 }
 
 void lifewatch::sendNudge(){
@@ -87,6 +107,34 @@ void lifewatch::sendNudge(){
 void lifewatch::setCallback(void (*func)(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total)){
     client_.setHandler(func);
     client_.connect();
-    setup = !pendantobj_->Initialize();
-    if (!setup){screenDriver_->displayCode(pendantobj_->getCode());}
+    _setup = !pendantobj_->Initialize();
+    if (!_setup){screenDriver_->displayCode(pendantobj_->getCode());}
+}
+
+void lifewatch::flipMode(){
+  if (!_setup){
+    _mode = _mode? false: true;
+    if (_mode) pendantobj_->PlayAudio("Manual SOS mode in 10 seconds, press button to cancel");
+    else{sendSOS(false);}
+    _sos = false;
+    _count = 10;
+    if (!_mode) screenDriver_->displayCode(pendantobj_->getCode());
+  }
+}
+
+void lifewatch::sendSOS(bool mode){
+  String jstring = "";
+  StaticJsonDocument<200> doc_tx;
+  JsonObject obj = doc_tx.to<JsonObject>();
+  obj["code"] = pendantobj_->getCode();
+  obj["status"] = mode? "SOS" : "Normal";
+  serializeJson(doc_tx, jstring);
+  client_.send("Chip/SOS", jstring.c_str());
+}
+
+void lifewatch::fall(){
+  if (!_setup){
+    _mode = true;
+    pendantobj_->PlayAudio("Fall detected, press the button to cancel SOS mode");
+  }
 }

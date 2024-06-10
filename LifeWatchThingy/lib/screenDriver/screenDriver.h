@@ -10,4 +10,6 @@ class screenDriver{
         screenDriver(TFT_eSPI * tft);
 
         void displayCode(String code);
+        void displaySOS();
+        void countdownSOS(int num);
 };   
