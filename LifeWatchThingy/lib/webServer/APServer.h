@@ -2,6 +2,7 @@
 #include <WebSocketsServer.h>
 #include <ArduinoJson.h>
 #include <SPIFFS.h>
+#include <../screenDriver/screenDriver.h>
 #include <../memorySocket/memorySocket.h>
 
 
@@ -21,6 +22,8 @@ class APServer{
         IPAddress AP_GATEWAY_ = IPAddress(192,167,1,5); // Gateway
         IPAddress AP_SUBNET_ = IPAddress(255,255,255,0); // Subnet mask
 
+        std::unique_ptr<screenDriver> screenDriver_;
+
         const char * AP_SSID_ = "LifeWatch"; //SSID for created AP
         const char * AP_password_ = "PASSWORD"; //Password for created AP
 
@@ -28,7 +31,7 @@ class APServer{
 
     public:
 
-        APServer(std::unique_ptr<memoryManager> mem);
+        APServer(std::unique_ptr<memoryManager> mem, Adafruit_SSD1306 * screen);
 
         void connect();
         void loop();

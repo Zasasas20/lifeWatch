@@ -13,6 +13,8 @@ TinyGPSPlus gps;
 Adafruit_MPU6050 mpu;
 Audio audio;
 
+Adafruit_SSD1306 screen(128, 64, &Wire, -1);
+
 #define I2S_DOUT 12
 #define I2S_BCLK 14
 #define I2S_LRC 27
@@ -21,8 +23,8 @@ Audio audio;
 
 // DEBUG ONLY:
 bool debugMode = true;
-String SSID = "Rg";
-String Pass = "12345678";
+String SSID = "Zaid";
+String Pass = "Holdonbro";
 
 unsigned long lastMillis;
 
@@ -50,8 +52,12 @@ void setup() {
 
   pinMode(0, INPUT_PULLUP);
 
+  if(!screen.begin(SSD1306_SWITCHCAPVCC, 0x3C)){
+    Serial.println("Screen not found");
+  }
+
   if (mem->isSetup() || debugMode){
-    LifeWatch = std::unique_ptr<lifewatch>(new lifewatch(std::move(mem), &audio, IPAddress(80,115,229,72), debugMode, SSID, Pass));
+    LifeWatch = std::unique_ptr<lifewatch>(new lifewatch(std::move(mem), &audio, IPAddress(80,115,229,72), debugMode, SSID, Pass, &screen));
     if (!mpu.begin()) {
       Serial.println("Failed to find MPU6050 chip");
     } else Serial.println("found MPU6050 chip");
@@ -63,7 +69,7 @@ void setup() {
   }
   else{
     Serial.println("Read AP");
-    server = std::unique_ptr<APServer>(new APServer(std::move(mem)));
+    server = std::unique_ptr<APServer>(new APServer(std::move(mem),&screen));
     server->connect();
   }
 

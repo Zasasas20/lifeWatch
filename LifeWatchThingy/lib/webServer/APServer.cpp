@@ -1,19 +1,22 @@
 #include "APServer.h"
 
-APServer::APServer(std::unique_ptr<memoryManager> mem) : 
- mem_(std::move(mem)){
+APServer::APServer(std::unique_ptr<memoryManager> mem, Adafruit_SSD1306 * screen) : 
+screenDriver_(std::unique_ptr<screenDriver>(new screenDriver(screen))),
+mem_(std::move(mem)){
     mem_->disableWiFi();
 
     WiFi.softAPConfig(AP_IP_, AP_GATEWAY_, AP_SUBNET_);
 
     Serial.println("Mounting SPIFFS");
     
+    SPIFFS.begin();
 }
 
 void APServer::connect(){
     WiFi.softAP(AP_SSID_, AP_password_);
 
     Serial.println(WiFi.softAPIP());
+    screenDriver_->connected(WiFi.softAPIP().toString());
 
     server_.on("/", HTTP_GET, [](AsyncWebServerRequest * request){
         request->send(SPIFFS, "/setup.html", "text/html");

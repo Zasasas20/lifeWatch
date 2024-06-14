@@ -21,7 +21,7 @@ class lifewatch{
         void sendNudge();
         void sendSOS(bool mode);
     public:
-        lifewatch(std::unique_ptr<memoryManager> mem, Audio* audio, IPAddress address, bool debugMode, String SSID, String Pass);
+        lifewatch(std::unique_ptr<memoryManager> mem, Audio* audio, IPAddress address, bool debugMode, String SSID, String Pass, Adafruit_SSD1306 * screen);
 
         void flipMode();
         void fall();

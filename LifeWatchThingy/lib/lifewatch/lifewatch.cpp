@@ -1,9 +1,9 @@
 #include "lifewatch.h"
 
-lifewatch::lifewatch(std::unique_ptr<memoryManager> mem, Audio* audio, IPAddress address, bool debugMode, String SSID, String Pass):
+lifewatch::lifewatch(std::unique_ptr<memoryManager> mem, Audio* audio, IPAddress address, bool debugMode, String SSID, String Pass, Adafruit_SSD1306 * screen):
 client_(mqttSocket(address, "")),
 pendantobj_(std::unique_ptr<pendant>(new pendant(std::move(mem), audio))),
-screenDriver_(std::unique_ptr<screenDriver>(new screenDriver())){
+screenDriver_(std::unique_ptr<screenDriver>(new screenDriver(screen))){
     initWifi(debugMode, SSID, Pass);
 }
 
@@ -48,18 +48,27 @@ void lifewatch::initWifi(bool debugMode, String SSID, String Pass){
   while (WiFi.status() != WL_CONNECTED){
     delay(500);
     Serial.println("Connecting");
+    screenDriver_->connecting(true);
     count++;
+
+    if(digitalRead(0) == LOW){
+      screenDriver_->reseting();
+      pendantobj_->mem->disableWiFi();
+      delay(3000);
+      ESP.restart();
+    }
 
     if (count >= 10){
       WiFi.disconnect();
-      pendantobj_->mem->disableWiFi();
-      Serial.println("Connection Failed, restarting in AP Mode");
+      screenDriver_->connecting(false);
+      Serial.println("Connection Failed, restarting");
       delay(1000);
       ESP.restart();
       }
   }
     Serial.print("Connected on: ");
     Serial.println(WiFi.localIP());
+    screenDriver_->connected(WiFi.localIP().toString());
 }
 
 void lifewatch::sendGPS(float lat, float lng){
