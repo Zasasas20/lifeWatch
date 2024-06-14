@@ -113,7 +113,7 @@ namespace App
                     var req = new NotificationRequest
                     {
                         NotificationId = 1337,
-                        Title = "YOUR GRANDPA NEEDS HELP!",
+                        Title = "Device: " + res.code + "Sent SOS signal",
                         Description = "Go to location tracking",
                         Sound = DeviceInfo.Platform == DevicePlatform.Android ? "notif" : "notif.mp3",
                         Subtitle = "Hello",
