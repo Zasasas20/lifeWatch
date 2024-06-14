@@ -13,18 +13,16 @@ TinyGPSPlus gps;
 Adafruit_MPU6050 mpu;
 Audio audio;
 
-TFT_eSPI tft;
-
 #define I2S_DOUT 12
-#define I2S_BCLK 13
-#define I2S_LRC 15
+#define I2S_BCLK 14
+#define I2S_LRC 27
 #define I2C_SDA 21
 #define I2C_SCL 22
 
 // DEBUG ONLY:
 bool debugMode = true;
-String SSID = "Zaid";
-String Pass = "Holdonbro";
+String SSID = "Rg";
+String Pass = "12345678";
 
 unsigned long lastMillis;
 
@@ -40,7 +38,7 @@ void setup() {
 
   Serial.begin(9600);
 
-  Serial2.begin(9600,SERIAL_8N1,25,26);
+  Serial2.begin(9600,SERIAL_8N1,16,17);
 
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
 
@@ -50,15 +48,10 @@ void setup() {
   pinMode(I2C_SDA, INPUT_PULLUP);
   pinMode(I2C_SCL, INPUT_PULLUP);
 
-  pinMode(2, INPUT_PULLUP);
-
-  tft.init();
-
-  tft.fillScreen(TFT_BLACK);
-  tft.drawString("HIII", 0, 100);
+  pinMode(0, INPUT_PULLUP);
 
   if (mem->isSetup() || debugMode){
-    LifeWatch = std::unique_ptr<lifewatch>(new lifewatch(std::move(mem), &audio, IPAddress(80,115,229,72), debugMode, SSID, Pass, &tft));
+    LifeWatch = std::unique_ptr<lifewatch>(new lifewatch(std::move(mem), &audio, IPAddress(80,115,229,72), debugMode, SSID, Pass));
     if (!mpu.begin()) {
       Serial.println("Failed to find MPU6050 chip");
     } else Serial.println("found MPU6050 chip");
@@ -70,7 +63,7 @@ void setup() {
   }
   else{
     Serial.println("Read AP");
-    server = std::unique_ptr<APServer>(new APServer(std::move(mem), &tft));
+    server = std::unique_ptr<APServer>(new APServer(std::move(mem)));
     server->connect();
   }
 
@@ -82,7 +75,7 @@ void loop() {
   }
   else{
     while(Serial2.available() > 0){
-      int state = digitalRead(2);
+      int state = digitalRead(0);
       button_time = millis();
       sensors_event_t a, g, temp;
       mpu.getEvent(&a, &g, &temp);

@@ -1,9 +1,9 @@
 #include "lifewatch.h"
 
-lifewatch::lifewatch(std::unique_ptr<memoryManager> mem, Audio* audio, IPAddress address, bool debugMode, String SSID, String Pass, TFT_eSPI * tft):
+lifewatch::lifewatch(std::unique_ptr<memoryManager> mem, Audio* audio, IPAddress address, bool debugMode, String SSID, String Pass):
 client_(mqttSocket(address, "")),
 pendantobj_(std::unique_ptr<pendant>(new pendant(std::move(mem), audio))),
-screenDriver_(std::unique_ptr<screenDriver>(new screenDriver(tft))){
+screenDriver_(std::unique_ptr<screenDriver>(new screenDriver())){
     initWifi(debugMode, SSID, Pass);
 }
 
@@ -115,7 +115,8 @@ void lifewatch::flipMode(){
   if (!_setup){
     _mode = _mode? false: true;
     if (_mode) pendantobj_->PlayAudio("Manual SOS mode in 10 seconds, press button to cancel");
-    else{sendSOS(false);}
+    else{sendSOS(false);
+    pendantobj_->PlayAudio("SOS mode cancelled");}
     _sos = false;
     _count = 10;
     if (!_mode) screenDriver_->displayCode(pendantobj_->getCode());

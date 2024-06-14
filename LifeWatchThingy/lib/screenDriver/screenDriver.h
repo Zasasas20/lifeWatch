@@ -1,13 +1,12 @@
-#include <TFT_eSPI.h>
+#include <Arduino.h>
 
 #pragma once
 
 class screenDriver{
     private:
-        TFT_eSPI * tft_;
 
     public:
-        screenDriver(TFT_eSPI * tft);
+        screenDriver();
 
         void displayCode(String code);
         void displaySOS();

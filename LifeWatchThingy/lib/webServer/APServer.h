@@ -2,7 +2,6 @@
 #include <WebSocketsServer.h>
 #include <ArduinoJson.h>
 #include <SPIFFS.h>
-#include <TFT_eSPI.h>
 #include <../memorySocket/memorySocket.h>
 
 
@@ -13,7 +12,6 @@ class APServer{
 
     private:
         std::unique_ptr<memoryManager> mem_;
-        TFT_eSPI * spi_;
         AsyncWebServer server_ = AsyncWebServer(80);
         WebSocketsServer webSocket_ = WebSocketsServer(81);
 
@@ -30,7 +28,7 @@ class APServer{
 
     public:
 
-        APServer(std::unique_ptr<memoryManager> mem, TFT_eSPI * spi);
+        APServer(std::unique_ptr<memoryManager> mem);
 
         void connect();
         void loop();
