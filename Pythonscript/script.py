@@ -57,6 +57,21 @@ def update_location(Longitude, Latitude, Code):
     print("Location Updated!")
 
 
+def update_status(msg):
+    message = msg.payload.decode("utf-8")
+    data = json.loads(message)
+    code = data['code']
+    status = data['status']
+    connect_to_db()
+    cursor.execute('''
+                UPDATE Devices 
+                SET Status = ?
+                WHERE Code = ?
+            ''', status, code)
+    cnxn.commit()
+    print("Status Updated!")
+
+
 def update_details(Battery, Status, Code):
     connect_to_db()
     cursor.execute('''
@@ -111,7 +126,7 @@ def send_location(msg):
         Long = result[0]
         Lat = result[1]
         LocationData = dict_of(Long, Lat)
-        loc = dict_of(code,LocationData,req)
+        loc = dict_of(code, LocationData, req)
         json_object = json.dumps(loc)
         client.publish("Chip/Message", json_object)
         print("Location sent!")
@@ -160,6 +175,8 @@ def on_message(client, userdata, msg):
                 add_location(msg)
         case "App/Init":
             send_details(msg)
+        case "Chip/SOS":
+            update_status(msg)
 
 
 # Function to subscribe to topics in MQTT broker
@@ -167,6 +184,7 @@ def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
     client.subscribe("Chip/Init")
     client.subscribe("Chip/Message")
+    client.subscribe("Chip/SOS")
     client.subscribe("App/Init")
 
 
